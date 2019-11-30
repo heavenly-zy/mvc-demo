@@ -11020,6 +11020,8 @@ var _jquery = _interopRequireDefault(require("jquery"));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
+var html = "\n<section id=\"app1\">\n            <div class=\"output\">\n                <span id=\"number\">100</span>\n            </div>\n            <div class=\"actions\">\n                <button id=\"add1\">+1</button>\n                <button id=\"minus1\">-1</button>\n                <button id=\"mul2\">x2</button>\n                <button id=\"divide2\">\xF72</button>\n            </div>\n        </section>\n";
+(0, _jquery.default)(html).prependTo((0, _jquery.default)('body>.page'));
 var $button1 = (0, _jquery.default)("#add1");
 var $button2 = (0, _jquery.default)("#minus1");
 var $button3 = (0, _jquery.default)("#mul2");
@@ -11065,15 +11067,20 @@ var _jquery = _interopRequireDefault(require("jquery"));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
+var html = "\n<section id=\"app2\">\n            <ol class=\"tab-bar\">\n                <li><span>Tab1</span></li>\n                <li><span>Tab2</span></li>\n            </ol>\n            <ol class=\"tab-content\">\n                <li>\u5185\u5BB91</li>\n                <li>\u5185\u5BB92</li>\n            </ol>\n        </section>\n";
+(0, _jquery.default)(html).appendTo((0, _jquery.default)('body>.page'));
 var $tabBar = (0, _jquery.default)("#app2 .tab-bar");
 var $tabContent = (0, _jquery.default)("#app2 .tab-content");
+var localKey = 'app2.index';
+var index = localStorage.getItem(localKey) || 0;
 $tabBar.on("click", "li", function (e) {
   var $li = (0, _jquery.default)(e.currentTarget);
   $li.addClass("selected").siblings().removeClass("selected");
   var index = $li.index();
+  localStorage.setItem(localKey, index);
   $tabContent.children().eq(index).addClass("active").siblings().removeClass("active");
 });
-$tabBar.children().eq(0).trigger('click');
+$tabBar.children().eq(index).trigger('click');
 },{"./app2.css":"app2.css","jquery":"../node_modules/jquery/dist/jquery.js"}],"app3.css":[function(require,module,exports) {
 var reloadCSS = require('_css_loader');
 
@@ -11088,9 +11095,22 @@ var _jquery = _interopRequireDefault(require("jquery"));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
+var html = "\n<section id=\"app3\">\n            <div class=\"square\"></div>\n        </section>\n";
+(0, _jquery.default)(html).appendTo((0, _jquery.default)('body>.page'));
 var $square = (0, _jquery.default)('#app3 .square');
+var localKey = 'app3.active';
+var active = localStorage.getItem(localKey) === 'yes'; // true/false
+
+$square.toggleClass('active', active); // 第二个参数为true就添加active，为false就删除active
+
 $square.on('click', function () {
-  $square.toggleClass('active');
+  if ($square.hasClass('active')) {
+    $square.removeClass('active');
+    localStorage.setItem(localKey, 'no');
+  } else {
+    $square.addClass('active');
+    localStorage.setItem(localKey, 'yes');
+  }
 });
 },{"./app3.css":"app3.css","jquery":"../node_modules/jquery/dist/jquery.js"}],"app4.css":[function(require,module,exports) {
 var reloadCSS = require('_css_loader');
@@ -11106,6 +11126,8 @@ var _jquery = _interopRequireDefault(require("jquery"));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
+var html = "\n<section id=\"app4\">\n            <div class=\"circle\"></div>\n        </section>\n";
+(0, _jquery.default)(html).appendTo((0, _jquery.default)('body>.page'));
 var $circle = (0, _jquery.default)('#app4 .circle');
 $circle.on('mouseenter', function () {
   $circle.addClass('active');
@@ -11154,7 +11176,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "55284" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "64062" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};
