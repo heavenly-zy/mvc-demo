@@ -11023,17 +11023,14 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 // 数据相关的都放到 m
 var m = {
   data: {
-    n: localStorage.getItem("n")
+    n: parseInt(localStorage.getItem("n"))
   }
 }; // 视图相关都放到 v
 
 var v = {
-  html: "\n    <section id=\"app1\">\n                <div class=\"output\">\n                    <span id=\"number\">100</span>\n                </div>\n                <div class=\"actions\">\n                    <button id=\"add1\">+1</button>\n                    <button id=\"minus1\">-1</button>\n                    <button id=\"mul2\">x2</button>\n                    <button id=\"divide2\">\xF72</button>\n                </div>\n            </section>\n    ",
-  update: function update() {
-    c.ui.number.text(n || 100);
-  },
+  html: "\n    <section id=\"app1\">\n                <div class=\"output\">\n                    <span id=\"number\">{{n}}</span>\n                </div>\n                <div class=\"actions\">\n                    <button id=\"add1\">+1</button>\n                    <button id=\"minus1\">-1</button>\n                    <button id=\"mul2\">x2</button>\n                    <button id=\"divide2\">\xF72</button>\n                </div>\n            </section>\n    ",
   render: function render() {
-    (0, _jquery.default)(v.html).prependTo((0, _jquery.default)('body>.page'));
+    (0, _jquery.default)(v.html.replace('{{n}}', m.data.n)).prependTo((0, _jquery.default)('body>.page'));
   }
 }; // 其他都放到 c
 
@@ -11050,10 +11047,8 @@ var c = {
   },
   bindEvents: function bindEvents() {
     c.ui.button1.on("click", function () {
-      var n = parseInt(c.ui.number.text());
-      n += 1;
-      localStorage.setItem("n", n);
-      c.ui.number.text(n);
+      m.data.n += 1;
+      v.render();
     });
     c.ui.button2.on("click", function () {
       var n = parseInt(c.ui.number.text());

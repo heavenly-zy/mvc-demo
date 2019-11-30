@@ -4,7 +4,7 @@ import $ from 'jquery';
 // 数据相关的都放到 m
 const m = {
     data: {
-        n: localStorage.getItem("n")
+        n: parseInt(localStorage.getItem("n"))
     }
 }
 // 视图相关都放到 v
@@ -12,7 +12,7 @@ const v = {
     html: `
     <section id="app1">
                 <div class="output">
-                    <span id="number">100</span>
+                    <span id="number">{{n}}</span>
                 </div>
                 <div class="actions">
                     <button id="add1">+1</button>
@@ -22,11 +22,8 @@ const v = {
                 </div>
             </section>
     `,
-    update() {
-        c.ui.number.text(n || 100)
-    },
     render() {
-        $(v.html).prependTo($('body>.page'))
+        $(v.html.replace('{{n}}', m.data.n)).prependTo($('body>.page'))
     }
 }
 // 其他都放到 c
@@ -40,14 +37,12 @@ const c = {
             button4: $("#divide2"),
             number: $("#number")
         },
-        c.bindEvents() // 初始化后再绑定事件
+            c.bindEvents() // 初始化后再绑定事件
     },
     bindEvents() {
         c.ui.button1.on("click", () => {
-            let n = parseInt(c.ui.number.text())
-            n += 1
-            localStorage.setItem("n", n)
-            c.ui.number.text(n)
+            m.data.n += 1
+            v.render()
         })
         c.ui.button2.on("click", () => {
             let n = parseInt(c.ui.number.text())
