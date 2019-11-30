@@ -11029,11 +11029,15 @@ var m = {
 
 var v = {
   el: null,
-  html: "\n    <section id=\"app1\">\n                <div class=\"output\">\n                    <span id=\"number\">{{n}}</span>\n                </div>\n                <div class=\"actions\">\n                    <button id=\"add1\">+1</button>\n                    <button id=\"minus1\">-1</button>\n                    <button id=\"mul2\">x2</button>\n                    <button id=\"divide2\">\xF72</button>\n                </div>\n            </section>\n    ",
+  html: "\n    <div>\n                <div class=\"output\">\n                    <span id=\"number\">{{n}}</span>\n                </div>\n                <div class=\"actions\">\n                    <button id=\"add1\">+1</button>\n                    <button id=\"minus1\">-1</button>\n                    <button id=\"mul2\">x2</button>\n                    <button id=\"divide2\">\xF72</button>\n                </div>\n            </div>\n    ",
+  init: function init(container) {
+    v.container = (0, _jquery.default)(container);
+    v.render();
+  },
   render: function render() {
     if (v.el === null) {
       // el为空就直接追加
-      v.el = (0, _jquery.default)(v.html.replace('{{n}}', m.data.n)).prependTo((0, _jquery.default)('body>.page'));
+      v.el = (0, _jquery.default)(v.html.replace('{{n}}', m.data.n)).prependTo(v.container);
     } else {
       // el不为空就用新的el替换之前旧的el
       var newEl = (0, _jquery.default)(v.html.replace('{{n}}', m.data.n));
@@ -11044,7 +11048,8 @@ var v = {
 }; // 其他都放到 c
 
 var c = {
-  init: function init() {
+  init: function init(container) {
+    v.init(container);
     c.ui = {
       // 需要的元素
       button1: (0, _jquery.default)("#add1"),
@@ -11052,36 +11057,34 @@ var c = {
       button3: (0, _jquery.default)("#mul2"),
       button4: (0, _jquery.default)("#divide2"),
       number: (0, _jquery.default)("#number")
-    }, c.bindEvents(); // 初始化后再绑定事件
+    };
+    c.bindEvents(); // 初始化后再绑定事件
   },
   bindEvents: function bindEvents() {
-    c.ui.button1.on("click", function () {
+    v.container.on('click', '#add1', function () {
       m.data.n += 1;
       v.render();
     });
-    c.ui.button2.on("click", function () {
-      var n = parseInt(c.ui.number.text());
-      n -= 1;
-      localStorage.setItem("n", n);
-      c.ui.number.text(n);
+    v.container.on('click', '#minus1', function () {
+      m.data.n -= 1;
+      v.render();
     });
-    c.ui.button3.on("click", function () {
-      var n = parseInt(c.ui.number.text());
-      n *= 2;
-      localStorage.setItem("n", n);
-      c.ui.number.text(n);
+    v.container.on('click', '#mul2', function () {
+      m.data.n *= 2;
+      v.render();
     });
-    c.ui.button4.on("click", function () {
-      var n = parseInt(c.ui.number.text());
-      n /= 2;
-      localStorage.setItem("n", n);
-      c.ui.number.text(n);
+    v.container.on('click', '#divide2', function () {
+      m.data.n /= 2;
+      v.render();
     });
   }
-}; // 第一次渲染 HTML
-
-v.render();
-c.init(); // v.render()执行后再执行c.init()，保证一定能获取到节点
+};
+c.init('#app1');
+/* render()后节点刷新，因此不能直接绑定节点(刷新后bindEvents()找不到节点)，
+需要在外面传一个父容器(#app1)进来，这时候刷新的只是父容器里面的div，
+父容器不变，里面的div变(刷新)，刷新之后的id也不变
+因此此时就可以用事件委托(监听父容器)来解决这个bug
+*/
 },{"./app1.css":"app1.css","jquery":"../node_modules/jquery/dist/jquery.js"}],"app2.css":[function(require,module,exports) {
 var reloadCSS = require('_css_loader');
 

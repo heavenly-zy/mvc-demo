@@ -11,7 +11,7 @@ const m = {
 const v = {
     el: null,
     html: `
-    <section id="app1">
+    <div>
                 <div class="output">
                     <span id="number">{{n}}</span>
                 </div>
@@ -21,11 +21,15 @@ const v = {
                     <button id="mul2">x2</button>
                     <button id="divide2">÷2</button>
                 </div>
-            </section>
+            </div>
     `,
+    init(container) {
+        v.container = $(container)
+        v.render()
+    },
     render() {
         if (v.el === null) { // el为空就直接追加
-            v.el = $(v.html.replace('{{n}}', m.data.n)).prependTo($('body>.page'))
+            v.el = $(v.html.replace('{{n}}', m.data.n)).prependTo(v.container)
         } else { // el不为空就用新的el替换之前旧的el
             const newEl = $(v.html.replace('{{n}}', m.data.n))
             v.el.replaceWith(newEl)
@@ -35,7 +39,8 @@ const v = {
 }
 // 其他都放到 c
 const c = {
-    init() {
+    init(container) {
+        v.init(container)
         c.ui = {
             // 需要的元素
             button1: $("#add1"),
@@ -43,37 +48,34 @@ const c = {
             button3: $("#mul2"),
             button4: $("#divide2"),
             number: $("#number")
-        },
-            c.bindEvents() // 初始化后再绑定事件
+        }
+        c.bindEvents() // 初始化后再绑定事件
     },
     bindEvents() {
-        c.ui.button1.on("click", () => {
+        v.container.on('click', '#add1', () => {
             m.data.n += 1
+            v.render() 
+        })
+        v.container.on('click', '#minus1', () => {
+            m.data.n -= 1
             v.render()
         })
-        c.ui.button2.on("click", () => {
-            let n = parseInt(c.ui.number.text())
-            n -= 1
-            localStorage.setItem("n", n)
-            c.ui.number.text(n)
+        v.container.on('click', '#mul2', () => {
+            m.data.n *= 2
+            v.render()
         })
-        c.ui.button3.on("click", () => {
-            let n = parseInt(c.ui.number.text())
-            n *= 2
-            localStorage.setItem("n", n)
-            c.ui.number.text(n)
-        })
-        c.ui.button4.on("click", () => {
-            let n = parseInt(c.ui.number.text())
-            n /= 2
-            localStorage.setItem("n", n)
-            c.ui.number.text(n)
+        v.container.on('click', '#divide2', () => {
+            m.data.n /= 2
+            v.render()
         })
     }
 }
-// 第一次渲染 HTML
-v.render()
 
-c.init() // v.render()执行后再执行c.init()，保证一定能获取到节点
+c.init('#app1')
 
+/* render()后节点刷新，因此不能直接绑定节点(刷新后bindEvents()找不到节点)，
+需要在外面传一个父容器(#app1)进来，这时候刷新的只是父容器里面的div，
+父容器不变，里面的div变(刷新)，刷新之后的id也不变
+因此此时就可以用事件委托(监听父容器)来解决这个bug
+*/
 
