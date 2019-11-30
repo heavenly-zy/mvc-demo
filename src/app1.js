@@ -9,6 +9,7 @@ const m = {
 }
 // 视图相关都放到 v
 const v = {
+    el: null,
     html: `
     <section id="app1">
                 <div class="output">
@@ -23,7 +24,13 @@ const v = {
             </section>
     `,
     render() {
-        $(v.html.replace('{{n}}', m.data.n)).prependTo($('body>.page'))
+        if (v.el === null) { // el为空就直接追加
+            v.el = $(v.html.replace('{{n}}', m.data.n)).prependTo($('body>.page'))
+        } else { // el不为空就用新的el替换之前旧的el
+            const newEl = $(v.html.replace('{{n}}', m.data.n))
+            v.el.replaceWith(newEl)
+            v.el = newEl
+        }
     }
 }
 // 其他都放到 c

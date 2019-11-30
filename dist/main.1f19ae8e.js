@@ -11028,9 +11028,18 @@ var m = {
 }; // 视图相关都放到 v
 
 var v = {
+  el: null,
   html: "\n    <section id=\"app1\">\n                <div class=\"output\">\n                    <span id=\"number\">{{n}}</span>\n                </div>\n                <div class=\"actions\">\n                    <button id=\"add1\">+1</button>\n                    <button id=\"minus1\">-1</button>\n                    <button id=\"mul2\">x2</button>\n                    <button id=\"divide2\">\xF72</button>\n                </div>\n            </section>\n    ",
   render: function render() {
-    (0, _jquery.default)(v.html.replace('{{n}}', m.data.n)).prependTo((0, _jquery.default)('body>.page'));
+    if (v.el === null) {
+      // el为空就直接追加
+      v.el = (0, _jquery.default)(v.html.replace('{{n}}', m.data.n)).prependTo((0, _jquery.default)('body>.page'));
+    } else {
+      // el不为空就用新的el替换之前旧的el
+      var newEl = (0, _jquery.default)(v.html.replace('{{n}}', m.data.n));
+      v.el.replaceWith(newEl);
+      v.el = newEl;
+    }
   }
 }; // 其他都放到 c
 
