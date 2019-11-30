@@ -11020,39 +11020,68 @@ var _jquery = _interopRequireDefault(require("jquery"));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-var html = "\n<section id=\"app1\">\n            <div class=\"output\">\n                <span id=\"number\">100</span>\n            </div>\n            <div class=\"actions\">\n                <button id=\"add1\">+1</button>\n                <button id=\"minus1\">-1</button>\n                <button id=\"mul2\">x2</button>\n                <button id=\"divide2\">\xF72</button>\n            </div>\n        </section>\n";
-(0, _jquery.default)(html).prependTo((0, _jquery.default)('body>.page'));
-var $button1 = (0, _jquery.default)("#add1");
-var $button2 = (0, _jquery.default)("#minus1");
-var $button3 = (0, _jquery.default)("#mul2");
-var $button4 = (0, _jquery.default)("#divide2");
-var $number = (0, _jquery.default)("#number");
-var n = localStorage.getItem("n");
-$number.text(n || 100);
-$button1.on("click", function () {
-  var n = parseInt($number.text());
-  n += 1;
-  localStorage.setItem("n", n);
-  $number.text(n);
-});
-$button2.on("click", function () {
-  var n = parseInt($number.text());
-  n -= 1;
-  localStorage.setItem("n", n);
-  $number.text(n);
-});
-$button3.on("click", function () {
-  var n = parseInt($number.text());
-  n *= 2;
-  localStorage.setItem("n", n);
-  $number.text(n);
-});
-$button4.on("click", function () {
-  var n = parseInt($number.text());
-  n /= 2;
-  localStorage.setItem("n", n);
-  $number.text(n);
-});
+// 数据相关的都放到 m
+var m = {
+  data: {
+    n: localStorage.getItem("n")
+  }
+}; // 视图相关都放到 v
+
+var v = {
+  html: "\n    <section id=\"app1\">\n                <div class=\"output\">\n                    <span id=\"number\">100</span>\n                </div>\n                <div class=\"actions\">\n                    <button id=\"add1\">+1</button>\n                    <button id=\"minus1\">-1</button>\n                    <button id=\"mul2\">x2</button>\n                    <button id=\"divide2\">\xF72</button>\n                </div>\n            </section>\n    ",
+  update: function update() {
+    c.ui.number.text(n || 100);
+  },
+  render: function render() {
+    (0, _jquery.default)(v.html).prependTo((0, _jquery.default)('body>.page'));
+  }
+};
+console.log((0, _jquery.default)("#add1")); // 结果为null，此时并未获取到节点
+// 其他都放到 c
+
+var c = {
+  ui: {
+    // 需要的元素
+    button1: (0, _jquery.default)("#add1"),
+    // 因为$("#add1")是一个函数调用，因此先执行，此时并未执行render()，所以此时拿不到节点
+    button2: (0, _jquery.default)("#minus1"),
+    button3: (0, _jquery.default)("#mul2"),
+    button4: (0, _jquery.default)("#divide2"),
+    number: (0, _jquery.default)("#number")
+  },
+  bindEvents: function bindEvents() {
+    c.ui.button1.on("click", function () {
+      var n = parseInt(c.ui.number.text());
+      n += 1;
+      localStorage.setItem("n", n);
+      c.ui.number.text(n);
+    });
+    c.ui.button2.on("click", function () {
+      var n = parseInt(c.ui.number.text());
+      n -= 1;
+      localStorage.setItem("n", n);
+      c.ui.number.text(n);
+    });
+    c.ui.button3.on("click", function () {
+      var n = parseInt(c.ui.number.text());
+      n *= 2;
+      localStorage.setItem("n", n);
+      c.ui.number.text(n);
+    });
+    c.ui.button4.on("click", function () {
+      var n = parseInt(c.ui.number.text());
+      n /= 2;
+      localStorage.setItem("n", n);
+      c.ui.number.text(n);
+    });
+  }
+}; // 第一次渲染 HTML
+
+v.render();
+console.log((0, _jquery.default)("#add1")); // 结果为button#add1，渲染后获取到节点
+// 绑定事件
+
+c.bindEvents();
 },{"./app1.css":"app1.css","jquery":"../node_modules/jquery/dist/jquery.js"}],"app2.css":[function(require,module,exports) {
 var reloadCSS = require('_css_loader');
 
