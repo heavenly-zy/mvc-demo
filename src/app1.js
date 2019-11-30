@@ -29,16 +29,18 @@ const v = {
         $(v.html).prependTo($('body>.page'))
     }
 }
-console.log($("#add1")) // 结果为null，此时并未获取到节点
 // 其他都放到 c
 const c = {
-    ui: {
-        // 需要的元素
-        button1: $("#add1"), // 因为$("#add1")是一个函数调用，因此先执行，此时并未执行render()，所以此时拿不到节点
-        button2: $("#minus1"),
-        button3: $("#mul2"),
-        button4: $("#divide2"),
-        number: $("#number")
+    init() {
+        c.ui = {
+            // 需要的元素
+            button1: $("#add1"),
+            button2: $("#minus1"),
+            button3: $("#mul2"),
+            button4: $("#divide2"),
+            number: $("#number")
+        },
+        c.bindEvents() // 初始化后再绑定事件
     },
     bindEvents() {
         c.ui.button1.on("click", () => {
@@ -69,8 +71,7 @@ const c = {
 }
 // 第一次渲染 HTML
 v.render()
-console.log($("#add1")) // 结果为button#add1，渲染后获取到节点
-// 绑定事件
-c.bindEvents()
+
+c.init() // v.render()执行后再执行c.init()，保证一定能获取到节点
 
 

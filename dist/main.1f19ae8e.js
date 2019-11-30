@@ -11035,19 +11035,18 @@ var v = {
   render: function render() {
     (0, _jquery.default)(v.html).prependTo((0, _jquery.default)('body>.page'));
   }
-};
-console.log((0, _jquery.default)("#add1")); // 结果为null，此时并未获取到节点
-// 其他都放到 c
+}; // 其他都放到 c
 
 var c = {
-  ui: {
-    // 需要的元素
-    button1: (0, _jquery.default)("#add1"),
-    // 因为$("#add1")是一个函数调用，因此先执行，此时并未执行render()，所以此时拿不到节点
-    button2: (0, _jquery.default)("#minus1"),
-    button3: (0, _jquery.default)("#mul2"),
-    button4: (0, _jquery.default)("#divide2"),
-    number: (0, _jquery.default)("#number")
+  init: function init() {
+    c.ui = {
+      // 需要的元素
+      button1: (0, _jquery.default)("#add1"),
+      button2: (0, _jquery.default)("#minus1"),
+      button3: (0, _jquery.default)("#mul2"),
+      button4: (0, _jquery.default)("#divide2"),
+      number: (0, _jquery.default)("#number")
+    }, c.bindEvents(); // 初始化后再绑定事件
   },
   bindEvents: function bindEvents() {
     c.ui.button1.on("click", function () {
@@ -11078,10 +11077,7 @@ var c = {
 }; // 第一次渲染 HTML
 
 v.render();
-console.log((0, _jquery.default)("#add1")); // 结果为button#add1，渲染后获取到节点
-// 绑定事件
-
-c.bindEvents();
+c.init(); // v.render()执行后再执行c.init()，保证一定能获取到节点
 },{"./app1.css":"app1.css","jquery":"../node_modules/jquery/dist/jquery.js"}],"app2.css":[function(require,module,exports) {
 var reloadCSS = require('_css_loader');
 
