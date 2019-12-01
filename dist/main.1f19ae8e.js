@@ -11029,6 +11029,8 @@ var m = {
   update: function update(data) {
     Object.assign(m.data, data);
     eventBus.trigger('m:updated'); // 触发 'm:updated'
+
+    localStorage.setItem('n', m.data.n);
   }
 }; // 视图相关都放到 v
 
