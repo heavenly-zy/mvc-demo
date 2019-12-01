@@ -11031,52 +11031,51 @@ var v = {
   el: null,
   html: "\n    <div>\n                <div class=\"output\">\n                    <span id=\"number\">{{n}}</span>\n                </div>\n                <div class=\"actions\">\n                    <button id=\"add1\">+1</button>\n                    <button id=\"minus1\">-1</button>\n                    <button id=\"mul2\">x2</button>\n                    <button id=\"divide2\">\xF72</button>\n                </div>\n            </div>\n    ",
   init: function init(container) {
-    v.container = (0, _jquery.default)(container);
-    v.render();
+    v.el = (0, _jquery.default)(container);
   },
-  render: function render() {
-    if (v.el === null) {
-      // el为空就直接追加
-      v.el = (0, _jquery.default)(v.html.replace('{{n}}', m.data.n)).prependTo(v.container);
-    } else {
-      // el不为空就用新的el替换之前旧的el
-      var newEl = (0, _jquery.default)(v.html.replace('{{n}}', m.data.n));
-      v.el.replaceWith(newEl);
-      v.el = newEl;
-    }
+  render: function render(n) {
+    if (v.el.children.length !== 0) v.el.empty();
+    (0, _jquery.default)(v.html.replace('{{n}}', n)).appendTo(v.el);
   }
 }; // 其他都放到 c
 
 var c = {
   init: function init(container) {
     v.init(container);
-    c.ui = {
-      // 需要的元素
-      button1: (0, _jquery.default)("#add1"),
-      button2: (0, _jquery.default)("#minus1"),
-      button3: (0, _jquery.default)("#mul2"),
-      button4: (0, _jquery.default)("#divide2"),
-      number: (0, _jquery.default)("#number")
-    };
-    c.bindEvents(); // 初始化后再绑定事件
+    v.render(m.data.n); // view = render(data)
+
+    c.autoBindEvents(); // 初始化后再绑定事件
   },
-  bindEvents: function bindEvents() {
-    v.container.on('click', '#add1', function () {
-      m.data.n += 1;
-      v.render();
-    });
-    v.container.on('click', '#minus1', function () {
-      m.data.n -= 1;
-      v.render();
-    });
-    v.container.on('click', '#mul2', function () {
-      m.data.n *= 2;
-      v.render();
-    });
-    v.container.on('click', '#divide2', function () {
-      m.data.n /= 2;
-      v.render();
-    });
+  events: {
+    'click #add1': 'add',
+    'click #minus1': 'minus',
+    'click #mul2': 'mul',
+    'click #divide2': 'div'
+  },
+  add: function add() {
+    m.data.n += 1;
+    v.render(m.data.n);
+  },
+  minus: function minus() {
+    m.data.n -= 1;
+    v.render(m.data.n);
+  },
+  mul: function mul() {
+    m.data.n *= 2;
+    v.render(m.data.n);
+  },
+  div: function div() {
+    m.data.n /= 2;
+    v.render(m.data.n);
+  },
+  autoBindEvents: function autoBindEvents() {
+    for (var key in c.events) {
+      var value = c[c.events[key]];
+      var spaceIndex = key.indexOf(' ');
+      var part1 = key.slice(0, spaceIndex);
+      var part2 = key.slice(spaceIndex + 1);
+      v.el.on(part1, part2, value);
+    }
   }
 };
 c.init('#app1');
@@ -11208,7 +11207,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "64062" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "53262" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};

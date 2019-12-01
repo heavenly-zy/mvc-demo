@@ -24,50 +24,50 @@ const v = {
             </div>
     `,
     init(container) {
-        v.container = $(container)
-        v.render()
+        v.el = $(container)
     },
-    render() {
-        if (v.el === null) { // el为空就直接追加
-            v.el = $(v.html.replace('{{n}}', m.data.n)).prependTo(v.container)
-        } else { // el不为空就用新的el替换之前旧的el
-            const newEl = $(v.html.replace('{{n}}', m.data.n))
-            v.el.replaceWith(newEl)
-            v.el = newEl
-        }
+    render(n) {
+        if (v.el.children.length !== 0) v.el.empty()
+        $(v.html.replace('{{n}}', n)).appendTo(v.el)
     }
 }
 // 其他都放到 c
 const c = {
     init(container) {
         v.init(container)
-        c.ui = {
-            // 需要的元素
-            button1: $("#add1"),
-            button2: $("#minus1"),
-            button3: $("#mul2"),
-            button4: $("#divide2"),
-            number: $("#number")
-        }
-        c.bindEvents() // 初始化后再绑定事件
+        v.render(m.data.n) // view = render(data)
+        c.autoBindEvents() // 初始化后再绑定事件
     },
-    bindEvents() {
-        v.container.on('click', '#add1', () => {
-            m.data.n += 1
-            v.render() 
-        })
-        v.container.on('click', '#minus1', () => {
-            m.data.n -= 1
-            v.render()
-        })
-        v.container.on('click', '#mul2', () => {
-            m.data.n *= 2
-            v.render()
-        })
-        v.container.on('click', '#divide2', () => {
-            m.data.n /= 2
-            v.render()
-        })
+    events: {
+        'click #add1': 'add',
+        'click #minus1': 'minus',
+        'click #mul2': 'mul',
+        'click #divide2': 'div'
+    },
+    add() {
+        m.data.n += 1
+        v.render(m.data.n)
+    },
+    minus() {
+        m.data.n -= 1
+        v.render(m.data.n)
+    },
+    mul() {
+        m.data.n *= 2
+        v.render(m.data.n)
+    },
+    div() {
+        m.data.n /= 2
+        v.render(m.data.n)
+    },
+    autoBindEvents() {
+        for (let key in c.events) {
+            const value = c[c.events[key]]
+            const spaceIndex = key.indexOf(' ')
+            const part1 = key.slice(0, spaceIndex)
+            const part2 = key.slice(spaceIndex + 1)
+            v.el.on(part1, part2, value)
+        }
     }
 }
 
