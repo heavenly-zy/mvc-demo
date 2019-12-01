@@ -11020,10 +11020,15 @@ var _jquery = _interopRequireDefault(require("jquery"));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-// 数据相关的都放到 m
+var eventBus = (0, _jquery.default)({}); // 数据相关的都放到 m
+
 var m = {
   data: {
     n: parseInt(localStorage.getItem("n"))
+  },
+  update: function update(data) {
+    Object.assign(m.data, data);
+    eventBus.trigger('m:updated'); // 触发 'm:updated'
   }
 }; // 视图相关都放到 v
 
@@ -11045,6 +11050,11 @@ var c = {
     v.render(m.data.n); // view = render(data)
 
     c.autoBindEvents(); // 初始化后再绑定事件
+
+    eventBus.on('m:updated', function () {
+      // 监听 'm:updated'，update()执行后就render()
+      v.render(m.data.n);
+    });
   },
   events: {
     'click #add1': 'add',
@@ -11053,20 +11063,24 @@ var c = {
     'click #divide2': 'div'
   },
   add: function add() {
-    m.data.n += 1;
-    v.render(m.data.n);
+    m.update({
+      n: m.data.n + 1
+    }); // 执行update()
   },
   minus: function minus() {
-    m.data.n -= 1;
-    v.render(m.data.n);
+    m.update({
+      n: m.data.n - 1
+    });
   },
   mul: function mul() {
-    m.data.n *= 2;
-    v.render(m.data.n);
+    m.update({
+      n: m.data.n * 2
+    });
   },
   div: function div() {
-    m.data.n /= 2;
-    v.render(m.data.n);
+    m.update({
+      n: m.data.n / 2
+    });
   },
   autoBindEvents: function autoBindEvents() {
     for (var key in c.events) {

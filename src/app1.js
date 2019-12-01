@@ -1,10 +1,15 @@
 import './app1.css';
 import $ from 'jquery';
 
+const eventBus = $({})
 // 数据相关的都放到 m
 const m = {
     data: {
         n: parseInt(localStorage.getItem("n"))
+    },
+    update(data) {
+        Object.assign(m.data, data)
+        eventBus.trigger('m:updated') // 触发 'm:updated'
     }
 }
 // 视图相关都放到 v
@@ -37,6 +42,9 @@ const c = {
         v.init(container)
         v.render(m.data.n) // view = render(data)
         c.autoBindEvents() // 初始化后再绑定事件
+        eventBus.on('m:updated', () => { // 监听 'm:updated'，update()执行后就render()
+            v.render(m.data.n)
+        })
     },
     events: {
         'click #add1': 'add',
@@ -45,20 +53,16 @@ const c = {
         'click #divide2': 'div'
     },
     add() {
-        m.data.n += 1
-        v.render(m.data.n)
+        m.update({ n: m.data.n + 1 }) // 执行update()
     },
     minus() {
-        m.data.n -= 1
-        v.render(m.data.n)
+        m.update({ n: m.data.n - 1 })
     },
     mul() {
-        m.data.n *= 2
-        v.render(m.data.n)
+        m.update({ n: m.data.n * 2 })
     },
     div() {
-        m.data.n /= 2
-        v.render(m.data.n)
+        m.update({ n: m.data.n / 2 })
     },
     autoBindEvents() {
         for (let key in c.events) {
